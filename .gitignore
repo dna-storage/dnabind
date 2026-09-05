@@ -2,6 +2,8 @@
 experiments/
 *.pt
 
+scripts/
+
 # macOS
 .DS_Store
 ._*

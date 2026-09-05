@@ -47,14 +47,12 @@
     {
       "out_features": 512,
       "batch_norm": true,
-      "activation": "ReLU",
-      "dropout": 0.13
+      "activation": "ReLU"
     },
     {
       "out_features": 128,
       "batch_norm": true,
-      "activation": "ReLU",
-      "dropout": 0.06
+      "activation": "ReLU"
     },
     {
       "out_features": 1

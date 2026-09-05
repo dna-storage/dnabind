@@ -334,6 +334,6 @@ The best checkpoint is saved separately to `--checkpoint`.
   fully flag-driven, so it can be wrapped by an HPC scheduler without code
   changes.
 
-
+## Citation
 > ℹ️ Full citation details (author list, journal, year, DOI) will be finalized
 > on publication.
