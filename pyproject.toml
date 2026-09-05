@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dnabind"
+version = "0.1.0"
+description = "Train and evaluate CNN models for DNA-DNA binding prediction with pluggable sequence-pair encoders."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "dnabind authors" }]
+dependencies = [
+    "torch>=2.0",
+    "numpy",
+    "pandas",
+    "scikit-learn",
+    "matplotlib",
+]
+
+[project.optional-dependencies]
+# Extras used only by the playground notebook.
+notebook = ["jupyter"]
+
+[project.scripts]
+dnabind = "dnabind.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

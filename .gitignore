@@ -1,0 +1,18 @@
+# Training outputs
+experiments/
+*.pt
+
+# macOS
+.DS_Store
+._*
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.ipynb_checkpoints/
+
+# Note: the small demo CSVs in data/demo/ ARE committed so the quickstart runs
+# straight after clone; regenerate them anytime with make_demo_data.py.

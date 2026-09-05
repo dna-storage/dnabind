@@ -1,0 +1,15 @@
+{
+  "model_type": "cnn_nxn",
+  "lr": 0.001,
+  "batch_size": 512,
+  "conv2d_layers_config": [
+    {"out_channels": 64, "kernel_size": 3, "padding": 1, "activation": "relu", "batch_norm": true, "dropout": 0.1},
+    {"out_channels": 64, "kernel_size": 3, "padding": 1, "activation": "relu", "batch_norm": true, "dropout": 0.1},
+    {"out_channels": 16, "kernel_size": 1, "padding": 0, "activation": "relu", "batch_norm": true, "dropout": 0.1}
+  ],
+  "linear_layers_config": [
+    {"out_features": 128, "activation": "relu", "batch_norm": true, "dropout": 0.1},
+    {"out_features": 1}
+  ],
+  "final_global_pool": null
+}

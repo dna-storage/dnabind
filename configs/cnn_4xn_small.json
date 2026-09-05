@@ -1,0 +1,16 @@
+{
+  "model_type": "cnn_4xn",
+  "lr": 0.0004,
+  "batch_size": 512,
+  "conv2d_layers_config": [
+    {"out_channels": 128, "kernel_size": [4, 9], "activation": "relu", "batch_norm": true, "dropout": 0.2}
+  ],
+  "conv1d_layers_config": [
+    {"out_channels": 64, "kernel_size": 7, "activation": "relu", "batch_norm": true, "dropout": 0.15}
+  ],
+  "conv1d_final_global_pool": null,
+  "linear_layers_config": [
+    {"out_features": 64, "activation": "relu", "dropout": 0.2},
+    {"out_features": 1}
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "model_type": "cnn_4xn",
+  "lr": 0.0004,
+  "batch_size": 512,
+  "input_channels": 1,
+  "input_matrix_width": 40,
+  "conv2d_layers_config": [
+    {
+      "out_channels": 1024,
+      "kernel_size": [4, 9],
+      "activation": "ReLU",
+      "batch_norm": true,
+      "dropout": 0.30
+    }
+  ],
+  "conv1d_layers_config": [
+    {
+      "out_channels": 256,
+      "kernel_size": 7,
+      "activation": "ReLU",
+      "batch_norm": true,
+      "dropout": 0.168
+    },
+    {
+      "out_channels": 512,
+      "kernel_size": 5,
+      "activation": "ReLU",
+      "batch_norm": true,
+      "dropout": 0.138
+    },
+    {
+      "out_channels": 256,
+      "kernel_size": 5,
+      "activation": "ReLU",
+      "batch_norm": true,
+      "dropout": 0.07
+    },
+    {
+      "out_channels": 256,
+      "kernel_size": 3,
+      "activation": "ReLU",
+      "batch_norm": true,
+      "dropout": 0.426
+    }
+  ],
+  "linear_layers_config": [
+    {
+      "out_features": 256,
+      "activation": "ReLU"
+    },
+    {
+      "out_features": 128,
+      "activation": "ReLU",
+      "dropout": 0.2
+    },
+    {
+      "out_features": 1
+    }
+  ]
+}
