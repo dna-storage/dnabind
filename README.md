@@ -111,33 +111,37 @@ make init          # creates the conda env, installs PyTorch, installs dnabind
 ```
 
 `make init` runs `init.sh`, which (1) creates/updates the `dnabind` conda
-environment from `environment.yml`, (2) installs the tested PyTorch build, and
-(3) installs the package in editable mode (`pip install -e .`). It's safe to
-re-run.
+environment from the platform's environment file, (2) installs the tested
+PyTorch build, and (3) installs the package in editable mode
+(`pip install -e .`). It's safe to re-run.
+
+The platform is **auto-detected** from your OS: Linux uses
+`environment.linux.yml` + the CUDA 12.6 PyTorch build, and macOS uses
+`environment.macos.yml` + the CPU/MPS build (there is no CUDA on Mac).
 
 - **What to expect:** lots of download/install messages; this can take several
   minutes depending on your connection.
-- ⚠️ **CPU-only machines:** `init.sh` installs the CUDA 12.6 PyTorch build by
-  default. On a machine without an NVIDIA GPU, edit `init.sh` to comment the
-  CUDA `pip install torch ...` block and uncomment the CPU line just below it
-  before running `make init`.
-- 💡 **When to re-run:** you generally don't need to. Re-run only if
-  `environment.yml` changes; for pure source edits the editable install picks
+- ⚙️ **Override the platform:** if auto-detection is wrong (e.g. a CPU-only
+  Linux box), pass it explicitly: `bash init.sh linux` (or
+  `DNABIND_PLATFORM=linux bash init.sh`).
+- 💡 **When to re-run:** you generally don't need to. Re-run only if the
+  environment file changes; for pure source edits the editable install picks
   them up automatically.
 
 #### Manual install (equivalent, step by step)
 
 PyTorch is installed on its own because the right build depends on your
-hardware, so it is deliberately **not** pinned in `environment.yml`.
+hardware, so it is deliberately **not** pinned in the environment file.
 
 ```bash
 # 1. Create + activate the conda env (python + numpy/pandas/scikit-learn/matplotlib/jupyter)
-conda env create -f environment.yml
+#    Pick the file for your OS: environment.linux.yml or environment.macos.yml
+conda env create -f environment.linux.yml   # macOS: environment.macos.yml
 conda activate dnabind
 
 # 2. Install PyTorch — pick the line for your machine. Don't execute both lines
-# CPU only
-pip install torch==2.6.0   
+# CPU only / macOS
+pip install torch==2.6.0 torchvision==0.21.0 torchaudio==2.6.0   
 # CUDA 12.6
 pip install torch==2.6.0+cu126 torchvision==0.21.0+cu126 torchaudio==2.6.0+cu126 --index-url https://download.pytorch.org/whl/cu126   
 
