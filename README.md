@@ -98,8 +98,8 @@ Follow these steps in your terminal or command prompt:
 First, get a copy of this project onto your computer:
 
 ```bash
-git clone https://github.com/dna-storage/BINND.git
-cd BINND
+git clone https://github.com/dna-storage/dnabind.git
+cd dnabind
 ```
 ### 2. Initialize the Project Environment (First Time Only!)
 #### One command (recommended)
