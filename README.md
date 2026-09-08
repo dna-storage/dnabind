@@ -85,9 +85,10 @@ Before you begin, make sure you have:
 - **Make** — A build automation tool, typically pre-installed on Linux and macOS. For Windows, you might need to install it (e.g., via Chocolatey or Git Bash which often includes it).
 - **OS Compatibility**: This package has been tested and verified to work on the following operating systems:
 
-    | Operating System  | Version(s)       |
-    | ----------------- | ---------------- |
-    |Red Hat Enterprise Linux|9.4|
+    | Operating System  | Version(s)       | Architecture           |
+    | ----------------- | ---------------- | ---------------------- |
+    | Red Hat Enterprise Linux | 9.4        | x86_64                 |
+    | macOS (Sequoia)   | 15.6             | arm64 (Apple Silicon)  |
 
 ### Step-by-Step Setup Guide 👇
 
