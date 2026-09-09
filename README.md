@@ -22,6 +22,7 @@
 - [Encoders](#encoders-)
 - [Architectures](#architectures-)
 - [Data format](#data-format-)
+- [Synthetic datasets](#synthetic-datasets-)
 - [Predict on a single pair](#predict-on-a-single-pair-)
 - [Extending dnabind](#extending-dnabind-)
 - [Training outputs](#training-outputs-)
@@ -273,6 +274,31 @@ these columns:
 
 Sequences are fixed-length (default 20; set with `--seq_length`). The current implementation only accepts 20bp long sequences.
 
+## Synthetic datasets 🧪
+
+Beyond your own CSVs, `dnabind.datagen` ships **two dataset generators** that
+build controlled, construction-verified DNA-pair datasets in the `Seq1, Seq2,
+Label` format above (plus extra descriptive columns):
+
+| Generator | Module | What it builds |
+|---|---|---|
+| `complementary` | `dnabind.datagen.complementary` | Random **perfect-complementary** pairs — `seq2 = RC(seq1)`, a blunt 20-bp Watson–Crick duplex|
+| `offset` | `dnabind.datagen.offset` | An **offset ladder** of staggered antiparallel duplexes; each backbone appears at every signed offset for paired breaking-point analysis |
+
+Each module runs standalone and writes a CSV:
+
+```bash
+python -m dnabind.datagen.complementary --n-pairs 500 --seed 0 \
+  --out data/complementary/complementary.csv
+
+python -m dnabind.datagen.offset --n-backbones 200 --min-offset 5 --max-offset 10 \
+  --seed 0 --out data/offset_ladder/offset_ladder.csv
+```
+
+> 💡 **Worked example.** `notebooks/dataset_generation.ipynb` walks through both
+> generators end to end — calling them, inspecting the constructs, and saving the
+> resulting datasets.
+
 ## Predict on a single pair 🔮
 
 Checkpoints are self-describing — they remember which encoder and sequence
@@ -326,7 +352,8 @@ Each run writes to its `--log_dir`:
 
 | File | Contents |
 |------|----------|
-| `epoch_summary.csv` | Per-epoch training/validation metrics |
+| `epoch_summary.csv` | Per-epoch training/validation metrics, including per-epoch wall-clock time (`epoch_time_s`) |
+| `training_stats.json` | Whole-run resource stats: total training time (`total_training_time_s`) and, on CUDA, peak GPU memory (`peak_gpu_memory_bytes` / `peak_gpu_memory_mib`) |
 | `test_log.csv` | Per-sample predictions (with `--eval`) |
 | `test_metrics.json` | Accuracy / precision / recall / F1 / AUC (with `--eval`) |
 | `roc_curve.png` | ROC curve (with `--eval`) |
