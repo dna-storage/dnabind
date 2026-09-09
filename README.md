@@ -230,13 +230,10 @@ forms, so only their `_reversed` form is provided.
 
 `L` is the sequence length (`--seq_length`, default 20).
 
-> 💡 **See the encodings for yourself.** `examples/visualize_encodings.py` runs
-> every encoder on one pair, prints the arrays, and saves an annotated heatmap
-> gallery — handy for building intuition:
->
-> ```bash
-> python examples/visualize_encodings.py --seq1 AGCG --seq2 CGAT
-> ```
+> 💡 **See the encodings for yourself.** `notebooks/visualize_encodings.ipynb`
+> runs every encoder on one pair, prints the arrays, and draws an annotated
+> heatmap gallery inline — handy for building intuition. Edit `seq1`/`seq2` at the
+> top and re-run.
 
 ## Architectures 🧱
 
