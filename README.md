@@ -23,6 +23,7 @@
 - [Architectures](#architectures-)
 - [Data format](#data-format-)
 - [Synthetic datasets](#synthetic-datasets-)
+  - [Cross-validation splits](#cross-validation-splits)
 - [Predict on a single pair](#predict-on-a-single-pair-)
 - [Extending dnabind](#extending-dnabind-)
 - [Training outputs](#training-outputs-)
@@ -42,7 +43,7 @@ The accompanying paper asks how much the **input encoding** matters here. Rather
 than leaving a one-hot encoder to learn hybridization rules entirely from data,
 it proposes **biophysically informed encoders** that embed Watson–Crick and
 nearest-neighbor thermodynamic priors directly into the input tensor, and
-benchmarks 12 distinct encoders against one-hot baselines. The biophysically
+benchmarks 12 distinct encoders. The biophysically
 informed encoders generalize better and are more data-efficient and robust — up
 to **0.22 higher AUROC** and **>10× data efficiency** under limited training
 data — at a modest 3–5× resource overhead that still fits on a commodity GPU
@@ -210,9 +211,9 @@ shape determines which model family it pairs with: a `(C, 4, W)` shape feeds
 These are the **12 encoders evaluated in the paper**: three one-hot baselines
 (interleaved, concatenated, dual-channel) and the biophysically informed
 pair-matrix encoders (binary and weighted Watson–Crick, and nearest-neighbor
-ΔG), most available in both plain and `_reversed` forms.
+ΔG), most available in both `native` and `_reversed` forms.
 
-**Reversed convention.** Most encoders come in two registered names: the plain
+**Reversed convention.** Most encoders come in two registered names: the `native`
 name uses `seq2` as given (5'→3'), and the `_reversed` name reverses `seq2`
 first so that a perfect antiparallel duplex lines up. The
 nearest-neighbor encoders are only physically meaningful in the reversed
@@ -254,8 +255,7 @@ rest describes the layers. See `configs/` for complete, runnable examples.
 }
 ```
 
-- **`lr` and `batch_size` are required keys** and are read from the JSON, not
-  passed as CLI flags — keeping every training run's hyperparameters in one
+- **`lr` and `batch_size` are required keys** and are read from the JSON — keeping every training run's hyperparameters in one
   reproducible file.
 - Input dimensions are injected from the encoder's `output_shape`, so
   architecture JSONs never hard-code tensor sizes.
@@ -274,7 +274,7 @@ Sequences are fixed-length (default 20; set with `--seq_length`). The current im
 ## Synthetic datasets 🧪
 
 Beyond your own CSVs, `dnabind.datagen` ships **two dataset generators** that
-build controlled, construction-verified DNA-pair datasets in the `Seq1, Seq2,
+build synthetic DNA-pair datasets in the `Seq1, Seq2,
 Label` format above (plus extra descriptive columns):
 
 | Generator | Module | What it builds |
@@ -288,13 +288,39 @@ Each module runs standalone and writes a CSV:
 python -m dnabind.datagen.complementary --n-pairs 500 --seed 0 \
   --out data/complementary/complementary.csv
 
-python -m dnabind.datagen.offset --n-backbones 200 --min-offset 5 --max-offset 10 \
+python -m dnabind.datagen.offset --n-backbones 20 --min-offset 5 --max-offset 10 \
   --seed 0 --out data/offset_ladder/offset_ladder.csv
 ```
 
-> 💡 **Worked example.** `notebooks/dataset_generation.ipynb` walks through both
-> generators end to end — calling them, inspecting the constructs, and saving the
+> 💡 **Worked example.** `notebooks/dataset_generation.ipynb` walks through an example
+> generator end to end — calling, inspecting the constructs, and saving the
 > resulting datasets.
+
+### Cross-validation splits
+
+For the generalization studies, two helper scripts in `scripts/`
+carve master `train/val/test.csv` files (each row tagged with an `exp_index` in
+`2A..2Z`) into ready-to-train dataset directories. They stream the CSVs in chunks
+so datasets far larger than memory are fine, and self-check the outputs (schema,
+row counts, no train/test leakage).
+
+| Script | Builds | For |
+|---|---|---|
+| `scripts/generate_loo_splits.py` | 26 **leave-one-experiment-out** dirs: train/val exclude experiment `X`, test is all of `X` | Train on 25 experiments, test on the held-out 1 |
+| `scripts/generate_train_one_splits.py` | 26 **train-on-one** dirs: a train/val split of a single experiment `X` | Train on 1 experiment, test on the other 25 |
+
+```bash
+# 26 leave-one-experiment-out directories (2A..2Z) from master splits
+python scripts/generate_loo_splits.py \
+  --master_dir data/binding_dataset \
+  --out_dir    data/binding_dataset_loo
+
+# 26 train-on-one directories, reusing each LOO dir's single-experiment test.csv
+python scripts/generate_train_one_splits.py \
+  --loo_dir data/binding_dataset_loo \
+  --out_dir data/binding_dataset_trainone \
+  --val_frac 0.1
+```
 
 ## Predict on a single pair 🔮
 
